@@ -36,14 +36,14 @@ export class PaisesService {
     return this.http.get<Pais>(url);
   }
 
-  getPaisPorCodigo1( codigo: string ):Observable<Pais | null>{
+  // getPaisPorCodigo1( codigo: string ):Observable<Pais | null>{
 
-    if ( !codigo ){
-      return of(null)
-    }
+  //   if ( !codigo ){
+  //     return of(null)
+  //   }
 
-    const url: string = `${ this._baseUrl }/alpha/${ codigo }`;
-    return this.http.get<Pais>(url);
-  }
+  //   const url: string = `${ this._baseUrl }/alpha/${ codigo }`;
+  //   return this.http.get<Pais>(url);
+  // }
 
 }
