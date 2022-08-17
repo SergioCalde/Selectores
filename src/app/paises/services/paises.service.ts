@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { PaisSmall } from '../interfaces/paises.interface';
 import { Pais } from '../interfaces/pais.interface';
-import { of } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,24 +26,44 @@ export class PaisesService {
     return this.http.get<PaisSmall[]>( url );
   }
 
-  getPaisPorCodigo( codigo: string ):Observable<Pais | null>{
-
-    if ( !codigo ){
-      return of(null)
-    }
-
-    const url: string = `${ this._baseUrl1 }/alpha/${ codigo }`;
-    return this.http.get<Pais>(url);
-  }
-
-  // getPaisPorCodigo1( codigo: string ):Observable<Pais | null>{
+  // getPaisPorCodigo( codigo: string ):Observable<Pais | null>{
 
   //   if ( !codigo ){
   //     return of(null)
   //   }
 
-  //   const url: string = `${ this._baseUrl }/alpha/${ codigo }`;
+  //   const url: string = `${ this._baseUrl1 }/alpha/${ codigo }`;
   //   return this.http.get<Pais>(url);
   // }
+
+  getPaisPorCodigo( codigo: string ):Observable<Pais[] | []>{
+
+    if ( !codigo ){
+      return of([])
+    }
+
+    const url: string = `${ this._baseUrl }/alpha/${ codigo }`;
+    return this.http.get<Pais[]>(url);
+  }
+
+  getPaisPorCodigoSmall( codigo: string ):Observable<PaisSmall>{
+    const url: string = `${ this._baseUrl }/alpha/${ codigo }?fields=cca3,name`;
+    return this.http.get<PaisSmall>(url);
+  }
+
+  getPaisesPorCodigos( borders: string[] ):Observable<PaisSmall[]> {
+    if( !borders ) {
+      return of([]);
+    }
+    const peticiones: Observable<PaisSmall>[] = [];
+
+    borders.forEach( codigo => {
+      const peticion = this.getPaisPorCodigoSmall(codigo);
+      peticiones.push( peticion );
+    } );
+
+    return combineLatest( peticiones );
+
+  }
 
 }
